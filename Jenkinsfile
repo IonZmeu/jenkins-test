@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout code from source control
-                git 'https://github.com/IonZmeu/jenkins-test.git'
+                git branch: 'main', url: 'https://github.com/IonZmeu/jenkins-test.git'
             }
         }
 
