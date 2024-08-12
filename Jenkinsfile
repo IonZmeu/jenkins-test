@@ -23,17 +23,17 @@ pipeline {
             }
         }
 
-        // stage('Run Tests') {
-        //     steps {
-        //         // Run Python tests using the virtual environment's pytest
-        //         sh 'venv/bin/pytest'
-        //     }
-        //  }
+        stage('Run Tests') {
+            steps {
+                // Run Python tests using the virtual environment's pytest
+                sh 'venv/bin/pytest'
+            }
+        }
 
         stage('Run Flask App') {
             steps {
-                // Run the Flask application
-                sh 'venv/bin/python app.py &'
+                // Run the Flask application in the background
+                sh 'nohup venv/bin/python app.py &'
                 // Wait a few seconds to allow the Flask app to start
                 sh 'sleep 5'
             }
