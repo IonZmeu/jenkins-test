@@ -30,6 +30,15 @@ pipeline {
             }
         }
 
+        stage('Run Flask App') {
+            steps {
+                // Run the Flask application
+                sh 'venv/bin/python app.py &'
+                // Wait a few seconds to allow the Flask app to start
+                sh 'sleep 5'
+            }
+        }
+
         stage('Build') {
             steps {
                 // Build step, if applicable
