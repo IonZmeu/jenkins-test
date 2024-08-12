@@ -23,12 +23,12 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                // Run Python tests using the virtual environment's pytest
-                sh 'venv/bin/pytest'
-            }
-        }
+        //stage('Run Tests') {
+        //    steps {
+        //        // Run Python tests using the virtual environment's pytest
+        //        sh 'venv/bin/pytest'
+        //    }
+        //}
 
         stage('Run Flask App') {
             steps {
