@@ -11,31 +11,22 @@ pipeline {
 
         stage('Setup Python Environment') {
             steps {
-                // Create and activate a Python virtual environment
-                sh '''
-                python3 -m venv venv
-                source venv/bin/activate
-                '''
+                // Create a Python virtual environment
+                sh 'python3 -m venv venv'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install Python dependencies inside the virtual environment
-                sh '''
-                source venv/bin/activate
-                pip install -r requirements.txt
-                '''
+                // Install Python dependencies using the virtual environment's pip
+                sh 'venv/bin/pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                // Run Python tests inside the virtual environment
-                sh '''
-                source venv/bin/activate
-                pytest
-                '''
+                // Run Python tests using the virtual environment's pytest
+                sh 'venv/bin/pytest'
             }
         }
 
