@@ -1,9 +1,17 @@
-# calculator.py
+from flask import Flask, render_template, jsonify
 
-def add(a, b):
-    """Returns the sum of two numbers."""
-    return a + b
+app = Flask(__name__)
+counter = 0
 
-def subtract(a, b):
-    """Returns the difference between two numbers."""
-    return a - b
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/increment', methods=['POST'])
+def increment():
+    global counter
+    counter += 1
+    return jsonify(counter=counter)
+
+if __name__ == '__main__':
+    app.run(debug=True)
