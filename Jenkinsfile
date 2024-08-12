@@ -4,11 +4,16 @@ pipeline {
         stage('Check Docker') {
             steps {
                 script {
-                    def dockerInstalled = sh(script: 'command -v docker || true', returnStatus: true)
-                    
-                    if (dockerInstalled != 0) {
-                        echo 'Docker not found, attempting to install Docker...'
-                        sh '''
+                    // Print current PATH and check Docker
+                    sh '''
+                    echo "Current PATH: $PATH"
+                    which docker
+                    if command -v docker > /dev/null; then
+                        echo "Docker is installed."
+                        docker --version
+                    else
+                        echo "Docker is not installed, attempting to install Docker..."
+                        
                         # Update package information
                         sudo apt-get update
 
@@ -24,11 +29,10 @@ pipeline {
                         # Install Docker
                         sudo apt-get update
                         sudo apt-get install -y docker-ce
-                        '''
-                    } else {
-                        echo 'Docker is already installed.'
-                    }
+                    fi
+                    '''
                     
+                    // Verify Docker installation and pull the required image
                     sh 'docker --version'
                     sh 'docker pull python:3.12.5-alpine3.20'
                 }
