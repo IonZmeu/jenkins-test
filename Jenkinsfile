@@ -1,43 +1,31 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.9-slim'
-        }
-    }
+    agent any
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/IonZmeu/jenkins-test.git'
-            }
-        }
-
-        stage('Setup Python Environment') {
-            steps {
-                sh 'python3 -m venv venv'
-                sh 'source venv/bin/activate'
+                // Checkout code from source control
+                git 'https://github.com/IonZmeu/jenkins-test.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh '''
-                source venv/bin/activate
-                pip install -r requirements.txt
-                '''
+                // Install Python dependencies
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh '''
-                source venv/bin/activate
-                pytest
-                '''
+                // Run Python tests
+                sh 'pytest'
             }
         }
 
         stage('Build') {
             steps {
+                // Build step, if applicable
                 echo 'Build step here'
             }
         }
@@ -45,6 +33,7 @@ pipeline {
 
     post {
         always {
+            // Clean up or notify after pipeline completion
             echo 'Pipeline completed'
         }
     }
