@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:20.10-dind' // Use Docker-in-Docker image
+            label 'docker-agent' // Optional: specify a label if needed
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -11,8 +16,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // Build Docker image
                 script {
+                    // Build Docker image
                     docker.build('my-python-app')
                 }
             }
@@ -20,8 +25,8 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                // Run the Docker container
                 script {
+                    // Run the Docker container
                     docker.image('my-python-app').run('-d -p 9090:9090 --name my-python-app-container')
                 }
             }
@@ -43,8 +48,8 @@ pipeline {
 
         stage('Clean Up') {
             steps {
-                // Stop and remove the container
                 script {
+                    // Stop and remove the container
                     sh 'docker stop my-python-app-container || true'
                     sh 'docker rm my-python-app-container || true'
                 }
