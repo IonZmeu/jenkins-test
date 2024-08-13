@@ -14,5 +14,5 @@ def increment():
     return jsonify(counter=counter)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=9090)  # Change 8000 to your desired port
+    app.run(host='0.0.0.0', debug=True, port=9090)
 
