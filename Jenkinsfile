@@ -9,49 +9,45 @@ pipeline {
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Build Docker Image') {
             steps {
-                // Create a Python virtual environment
-                sh 'python3 -m venv venv'
+                // Build Docker image
+                script {
+                    docker.build('my-python-app')
+                }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Run Docker Container') {
             steps {
-                // Install Python dependencies using the virtual environment's pip
-                sh 'venv/bin/pip install -r requirements.txt'
+                // Run the Docker container
+                script {
+                    docker.image('my-python-app').run('-d -p 9090:9090 --name my-python-app-container')
+                }
             }
         }
 
-        //stage('Run Tests') {
-        //    steps {
-        //        // Run Python tests using the virtual environment's pytest
-        //        sh 'venv/bin/pytest'
-        //    }
-        //}
-
-        stage('Build Executable') {
+        stage('Wait for App to Start') {
             steps {
-                // Create a standalone executable using PyInstaller
-                sh '''
-                ./venv/bin/pyinstaller --onefile --add-data 'index.html:.' app.py
-                '''
-            }
-        }
-
-        stage('Run Executable') {
-            steps {
-                // Run the built executable in the background
-                sh 'nohup ./dist/app &'
                 // Wait a few seconds to ensure the app starts
-                sh 'sleep 5'
+                sh 'sleep 10'
             }
         }
 
-        stage('Build') {
+        stage('Test Container') {
             steps {
-                // Additional build steps, if needed
-                echo 'Additional build steps here'
+                // Additional steps to test or interact with the running container
+                echo 'Running tests or additional checks here'
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                // Stop and remove the container
+                script {
+                    sh 'docker stop my-python-app-container || true'
+                    sh 'docker rm my-python-app-container || true'
+                }
             }
         }
     }
@@ -59,7 +55,6 @@ pipeline {
     post {
         always {
             // Clean up or notify after pipeline completion
-            archiveArtifacts 'dist/app'
             echo 'Pipeline completed'
         }
     }
