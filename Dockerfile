@@ -1,8 +1,15 @@
-FROM jenkins/jenkins:lts
+# Use a base image with Python installed
+FROM python:3.9-slim
 
-USER root
+# Set the working directory in the container
+WORKDIR /app
 
-# Install Docker CLI
-RUN apt-get update && apt-get install -y docker.io
+# Copy requirements.txt and install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-USER jenkins
+# Copy the rest of the application code
+COPY . .
+
+# Specify the command to run the application
+CMD ["python", "app.py"]
