@@ -33,7 +33,9 @@ pipeline {
         stage('Build Executable') {
             steps {
                 // Create a standalone executable using PyInstaller
-                sh './venv/bin/pyinstaller --onefile app.py'
+                sh '''
+                pyinstaller --onefile --add-data 'index.html:.' app.py
+                '''
             }
         }
 
