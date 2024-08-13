@@ -30,19 +30,26 @@ pipeline {
         //    }
         //}
 
-        stage('Run Flask App') {
+        stage('Build Executable') {
             steps {
-                // Run the Flask application in the background
-                sh 'nohup venv/bin/python app.py &'
-                // Wait a few seconds to allow the Flask app to start
+                // Create a standalone executable using PyInstaller
+                sh './venv/bin/pyinstaller --onefile app.py'
+            }
+        }
+
+        stage('Run Executable') {
+            steps {
+                // Run the built executable in the background
+                sh 'nohup ./dist/app &'
+                // Wait a few seconds to ensure the app starts
                 sh 'sleep 5'
             }
         }
 
         stage('Build') {
             steps {
-                // Build step, if applicable
-                echo 'Build step here'
+                // Additional build steps, if needed
+                echo 'Additional build steps here'
             }
         }
     }
@@ -50,6 +57,7 @@ pipeline {
     post {
         always {
             // Clean up or notify after pipeline completion
+            archiveArtifacts 'dist/app'
             echo 'Pipeline completed'
         }
     }
