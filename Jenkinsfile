@@ -1,7 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'docker:20.10-dind' // Use Docker-in-Docker image
+            image 'docker:20.10-dind' // Docker-in-Docker image
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
         }
     }
 
