@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker {
             image 'docker:20.10-dind' // Use Docker-in-Docker image
-            label 'docker-agent' // Optional: specify a label if needed
         }
     }
 
