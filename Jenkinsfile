@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'docker:20.10-dind' // Docker-in-Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+            image 'python:3.11' // Use the Python Docker image (replace with your desired version)
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket if needed
         }
     }
 
@@ -14,45 +14,28 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    // Build Docker image
-                    docker.build('my-python-app')
+                    // Install dependencies inside the Python container
+                    sh 'pip install -r requirements.txt'
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Run Application') {
             steps {
                 script {
-                    // Run the Docker container
-                    docker.image('my-python-app').run('-d -p 9090:9090 --name my-python-app-container')
+                    // Run your Python application
+                    sh 'python app.py'
                 }
             }
         }
 
-        stage('Wait for App to Start') {
+        stage('Test Application') {
             steps {
-                // Wait a few seconds to ensure the app starts
-                sh 'sleep 10'
-            }
-        }
-
-        stage('Test Container') {
-            steps {
-                // Additional steps to test or interact with the running container
+                // Additional steps to test or interact with the running application
                 echo 'Running tests or additional checks here'
-            }
-        }
-
-        stage('Clean Up') {
-            steps {
-                script {
-                    // Stop and remove the container
-                    sh 'docker stop my-python-app-container || true'
-                    sh 'docker rm my-python-app-container || true'
-                }
             }
         }
     }
