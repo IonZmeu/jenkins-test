@@ -6,6 +6,10 @@ pipeline {
         }
     }
 
+    environment {
+        APP_PID_FILE = '/tmp/flask_app.pid' // Path to the PID file
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -26,10 +30,23 @@ pipeline {
         stage('Run Application') {
             steps {
                 script {
-                    // Run your Python application
-                    sh 'mkdir templates'
+                    // Prepare directory structure
+                    sh 'mkdir -p templates'
                     sh 'mv index.html templates/'
-                    sh 'python app.py'
+
+                    // Stop any previously running application
+                    sh """
+                        if [ -f ${APP_PID_FILE} ]; then
+                            kill $(cat ${APP_PID_FILE}) || true
+                            rm ${APP_PID_FILE}
+                        fi
+                    """
+
+                    // Run your Python application in the background
+                    sh """
+                        nohup python app.py > app.log 2>&1 &
+                        echo \$! > ${APP_PID_FILE}
+                    """
                 }
             }
         }
@@ -46,6 +63,13 @@ pipeline {
         always {
             // Clean up or notify after pipeline completion
             echo 'Pipeline completed'
+            // Stop the application if it's still running
+            //sh """
+            //    if [ -f ${APP_PID_FILE} ]; then
+            //        kill $(cat ${APP_PID_FILE}) || true
+            //        rm ${APP_PID_FILE}
+            //    fi
+            //"""
         }
     }
 }
