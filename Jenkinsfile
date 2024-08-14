@@ -27,6 +27,8 @@ pipeline {
             steps {
                 script {
                     // Run your Python application
+                    sh 'mkdir templates'
+                    sh 'mv index.html templates/'
                     sh 'python app.py'
                 }
             }
