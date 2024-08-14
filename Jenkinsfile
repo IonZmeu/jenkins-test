@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.11' // Use the Python Docker image (replace with your desired version)
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket if needed
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
         }
     }
 
