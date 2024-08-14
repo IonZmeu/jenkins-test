@@ -35,18 +35,18 @@ pipeline {
                     sh 'mv index.html templates/'
 
                     // Stop any previously running application
-                    sh """
+                    sh '''
                         if [ -f ${APP_PID_FILE} ]; then
                             kill $(cat ${APP_PID_FILE}) || true
                             rm ${APP_PID_FILE}
                         fi
-                    """
+                    '''
 
                     // Run your Python application in the background
-                    sh """
+                    sh '''
                         nohup python app.py > app.log 2>&1 &
-                        echo \$! > ${APP_PID_FILE}
-                    """
+                        echo $! > ${APP_PID_FILE}
+                    '''
                 }
             }
         }
@@ -64,12 +64,12 @@ pipeline {
             // Clean up or notify after pipeline completion
             echo 'Pipeline completed'
             // Stop the application if it's still running
-            //sh """
+            //sh '''
             //    if [ -f ${APP_PID_FILE} ]; then
             //        kill $(cat ${APP_PID_FILE}) || true
             //        rm ${APP_PID_FILE}
             //    fi
-            //"""
+            //'''
         }
     }
 }
